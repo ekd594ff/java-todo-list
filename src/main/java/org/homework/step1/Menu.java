@@ -19,11 +19,17 @@ public enum Menu {
     }
 
     public static String[] getMenuKorList() {
-        return Arrays.stream(values()).filter(item -> item.value > 0).map(item -> kor[item.value - 1]).toArray(String[]::new);
+        return Arrays.stream(values())
+                .filter(item -> item.value > 0)
+                .map(item -> kor[item.value - 1])
+                .toArray(String[]::new);
     }
 
     public static Integer[] getMenuValueList() {
-        return Arrays.stream(values()).filter(item -> item.value > 0).map(item -> item.value).toArray(Integer[]::new);
+        return Arrays.stream(values())
+                .filter(item -> item.value > 0)
+                .map(item -> item.value)
+                .toArray(Integer[]::new);
     }
 
     public static String getMenuKor(int value) {
