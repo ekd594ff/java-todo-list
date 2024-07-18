@@ -3,14 +3,9 @@ package org.homework.step2;
 import org.homework.step2.enums.Status;
 
 public class Todo {
-    private static int num = 0;
     private int id;
     private String description;
     private Status status;
-
-    private void incrementNum() {
-        ++num;
-    }
 
     public int getId() {
         return id;
@@ -29,9 +24,8 @@ public class Todo {
         return this.description;
     }
 
-    public Todo(String description) {
-        this.incrementNum();
-        this.id = num;
+    public Todo(String description, int todoId) {
+        this.id = todoId;
         this.description = description;
         this.status = Status.INCOMPLETE;
     }

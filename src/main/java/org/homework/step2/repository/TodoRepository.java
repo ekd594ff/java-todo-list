@@ -10,12 +10,18 @@ import java.util.Scanner;
 public class TodoRepository {
     static private final Map<Integer, Todo> map = new HashMap<>();
 
+    private static int todoId = 0;
+
+    private static int getTodoId() {
+        return todoId++;
+    }
+
     public Todo select(int id) {
         return map.get(id);
     }
 
     public Todo insert(String description) {
-        Todo todo = new Todo(description);
+        Todo todo = new Todo(description, getTodoId());
         map.put(todo.getId(), todo);
         return todo;
     }
@@ -24,9 +30,12 @@ public class TodoRepository {
         return map.remove(id);
     }
 
-    public String update(int id, String description) {
+    public Todo update(int id, String description) {
         return Optional.ofNullable(map.get(id))
-                .map(todo -> "할 일 ID: " + todo.getId() + " 내용: " + todo.setDescription(description))
-                .orElse("해당 ID의 할 일이 없습니다");
+                .map(todo -> {
+                    todo.setDescription(description);
+                    return todo;
+                })
+                .orElse(null);
     }
 }

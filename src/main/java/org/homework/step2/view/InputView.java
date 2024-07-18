@@ -11,6 +11,7 @@ public class InputView {
 
     private final Scanner scan = new Scanner(System.in);
 
+
     public int getUpdatedTodoId() {
         while(true) {
             System.out.print("수정할 ID: ");

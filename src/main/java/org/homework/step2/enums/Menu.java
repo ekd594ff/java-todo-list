@@ -33,18 +33,4 @@ public enum Menu {
                 .map(item -> item.korname)
                 .collect(Collectors.toList());
     }
-
-//    public static Integer[] getMenuValueList() {
-//        return Arrays.stream(values())
-//                .filter(item -> item.value > 0)
-//                .map(item -> item.value)
-//                .toArray(Integer[]::new);
-//    }
-//
-//    public static String getMenuKor(int value) {
-//        return Arrays.stream(values())
-//                .filter(item -> item.value == value)
-//                .findAny().map(item -> item.korname)
-//                .orElse("");
-//    }
 }
