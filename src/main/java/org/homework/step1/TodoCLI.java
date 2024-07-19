@@ -29,8 +29,8 @@ public class TodoCLI {
                 System.out.println("해당 ID의 할 일이 없습니다");
                 return;
             }
-            System.out.println("할 일 ID: " + id +  " 내용: " + todo);
-        }catch (Exception e){
+            System.out.println("할 일 ID: " + id + " 내용: " + todo);
+        } catch (Exception e) {
             System.out.println("해당 ID의 할 일이 없습니다");
         }
     }
@@ -49,14 +49,14 @@ public class TodoCLI {
         String line = scan.nextLine().trim();
         try {
             int id = Integer.parseInt(line);
-            String result = map.remove(id);
-            if (result == null) {
+            if (map.containsKey(id)) {
+                map.remove(id);
+                System.out.println("할 일이 삭제되었습니다. ID: " + id);
+            } else {
                 System.out.println("해당 ID의 할 일이 없습니다");
-                return;
             }
-            System.out.println("할 일이 삭제되었습니다. ID: " + id);
-        } catch (Exception e) {
-            System.out.println("해당 ID의 할 일이 없습니다");
+        } catch (NumberFormatException e) {
+            System.out.println("올바른 ID를 입력해 주세요");
         }
     }
 
@@ -101,7 +101,7 @@ public class TodoCLI {
         while (true) {
             printMenu();
             Menu choice = getMenu();
-            if(executeMethod(choice)) {
+            if (executeMethod(choice)) {
                 break;
             }
         }
