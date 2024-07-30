@@ -118,7 +118,7 @@ public class MySQLTodoRepository implements TodoRepository {
     }
 
     private List<Todo> selectTodoList() {
-        String query = "SELECT * FROM Todo WHERE deadline <= DATE_ADD(NOW(), INTERVAL 7 DAY)";
+        String query = "SELECT * FROM Todo WHERE deadline <= DATE_ADD(NOW(), INTERVAL 7 DAY) ORDER BY deadline ASC";
         return connectionPool.getConnection().map(connection -> {
             try {
                 PreparedStatement preparedStatement = connection.prepareStatement(query);
