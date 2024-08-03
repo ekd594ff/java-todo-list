@@ -31,24 +31,14 @@ public class InputView {
         return value;
     }
 
-    public int getUpdatedTodoId() {
+    public int getTodoIdWithMessage(String message) {
+        message += ": ";
         while (true) {
-            System.out.print("수정할 ID: ");
+            System.out.print(message);
             try {
                 return Integer.parseInt(this.getLine());
             } catch (NumberFormatException e) {
                 System.out.println("올바른 ID를 입력해 주세요");
-            }
-        }
-    }
-
-    public int getDeletedTodoId() {
-        while (true) {
-            System.out.print("삭제할 ID: ");
-            try {
-                return Integer.parseInt(this.getLine());
-            } catch (NumberFormatException e) {
-                throw new NumberFormatException("올바른 ID를 입력해 주세요");
             }
         }
     }
@@ -73,17 +63,6 @@ public class InputView {
 
     public CreateTodoDTO getCreateTodoDTO() {
         return new CreateTodoDTO(this.getDescription(), this.getDeadline());
-    }
-
-    public int getSelectTodoId() {
-        while (true) {
-            System.out.print("조회할 일의 ID: ");
-            try {
-                return Integer.parseInt(this.getLine());
-            } catch (NumberFormatException e) {
-                System.out.println("올바른 ID를 입력해 주세요");
-            }
-        }
     }
 
     public String printWrongMenuInput() {

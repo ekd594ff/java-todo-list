@@ -2,12 +2,15 @@ package org.homework.step4.repository;
 
 import org.homework.step4.entity.Todo;
 import org.homework.step4.dto.CreateTodoDTO;
+import org.homework.step4.enums.Status;
 import org.homework.step4.jdbc.JDBCConnectionPool;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class MySQLTodoRepository implements TodoRepository {
@@ -125,7 +128,7 @@ public class MySQLTodoRepository implements TodoRepository {
                 ResultSet resultSet = preparedStatement.executeQuery();
                 List<Todo> todoList = new ArrayList<>();
                 while (resultSet.next()) {
-                    todoList.add(Todo.toTodoItem(resultSet));
+                    todoList.add(this.toTodoItem(resultSet));
                 }
                 return todoList;
             } catch (SQLException e) {
@@ -145,7 +148,7 @@ public class MySQLTodoRepository implements TodoRepository {
                 ResultSet resultSet = preparedStatement.executeQuery();
                 List<Todo> todoList = new ArrayList<>();
                 while (resultSet.next()) {
-                    todoList.add(Todo.toTodoItem(resultSet));
+                    todoList.add(this.toTodoItem(resultSet));
                 }
                 return todoList;
             } catch (SQLException e) {
@@ -156,18 +159,60 @@ public class MySQLTodoRepository implements TodoRepository {
         }).orElse(List.of());
     }
 
+    private Todo toTodo(ResultSet resultSet) {
+        int index = 1;
+        int id = 0;
+        String description = "";
+        Status status = Status.valueOf("INCOMPLETE");
+        LocalDateTime deadline = null;
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        try {
+            do {
+                if (!resultSet.next()) {
+                    return null;
+                }
+                id = resultSet.getInt(index++);
+                description = resultSet.getString(index++);
+                status = Status.of(resultSet.getString(index++));
+                deadline = LocalDateTime.parse(resultSet.getString(index++), dateTimeFormatter);
+                index = 1;
+            } while (resultSet.next());
+            return new Todo(id, description, status, deadline);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private Todo toTodoItem(ResultSet resultSet) {
+        int index = 1;
+        int id = 0;
+        String description = "";
+        Status status = Status.valueOf("INCOMPLETE");
+        LocalDateTime deadline = null;
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        try {
+            id = resultSet.getInt(index++);
+            description = resultSet.getString(index++);
+            status = Status.of(resultSet.getString(index++));
+            deadline = LocalDateTime.parse(resultSet.getString(index++), dateTimeFormatter);
+            return new Todo(id, description, status, deadline);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 
     @Override
     public Optional<Todo> select(int id) {
         String query = "SELECT * FROM Todo where id = ?";
-        return this.selectTodoById(query, id).map(Todo::toTodo);
+        return this.selectTodoById(query, id).map(this::toTodo);
     }
 
     @Override
     public Todo insert(CreateTodoDTO createTodoDTO) {
         String query = "INSERT INTO Todo VALUES (?, ?, ?, ?)";
         Todo todo = createTodoDTO.toTodo();
-        return insertTodo(query, todo).map(Todo::toTodo).orElse(null);
+        return insertTodo(query, todo).map(this::toTodo).orElse(null);
 
     }
 

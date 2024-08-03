@@ -49,45 +49,4 @@ public class Todo {
         this.status = status;
     }
 
-    public static Todo toTodo(ResultSet resultSet) {
-        int index = 1;
-        int id = 0;
-        String description = "";
-        Status status = Status.valueOf("INCOMPLETE");
-        LocalDateTime deadline = null;
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        try {
-            do {
-                if (!resultSet.next()) {
-                    return null;
-                }
-                id = resultSet.getInt(index++);
-                description = resultSet.getString(index++);
-                status = Status.of(resultSet.getString(index++));
-                deadline = LocalDateTime.parse(resultSet.getString(index++), dateTimeFormatter);
-                index = 1;
-            } while (resultSet.next());
-            return new Todo(id, description, status, deadline);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public static Todo toTodoItem(ResultSet resultSet) {
-        int index = 1;
-        int id = 0;
-        String description = "";
-        Status status = Status.valueOf("INCOMPLETE");
-        LocalDateTime deadline = null;
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        try {
-            id = resultSet.getInt(index++);
-            description = resultSet.getString(index++);
-            status = Status.of(resultSet.getString(index++));
-            deadline = LocalDateTime.parse(resultSet.getString(index++), dateTimeFormatter);
-            return new Todo(id, description, status, deadline);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
 }
