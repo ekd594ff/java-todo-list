@@ -15,14 +15,19 @@ import java.util.*;
 
 public class MySQLTodoRepository implements TodoRepository {
 
-    private final JDBCConnectionPool connectionPool;
+    private static JDBCConnectionPool connectionPool;
+    private static MySQLTodoRepository mySQLTodoRepository;
 
-    public MySQLTodoRepository(JDBCConnectionPool connectionPool) {
-        this.connectionPool = connectionPool;
-        this.createTodoTable();
+    public static MySQLTodoRepository from(JDBCConnectionPool connectionPool) {
+        if(mySQLTodoRepository == null) {
+            MySQLTodoRepository.connectionPool = connectionPool;
+            createTodoTable();
+            mySQLTodoRepository = new MySQLTodoRepository();
+        }
+        return mySQLTodoRepository;
     }
 
-    private int executeUpdate(String query) {
+    private static int executeUpdate(String query) {
         return connectionPool.getConnection().map(connection -> {
             try {
                 Statement statement = connection.createStatement();
@@ -111,13 +116,13 @@ public class MySQLTodoRepository implements TodoRepository {
         });
     }
 
-    public int createTodoTable() {
+    public static int createTodoTable() {
         String query = "CREATE TABLE IF NOT EXISTS Todo (" +
                 "id INT PRIMARY KEY AUTO_INCREMENT, " +
                 "description VARCHAR(128), " +
                 "status VARCHAR(32), " +
                 "deadline DATETIME)";
-        return this.executeUpdate(query);
+        return executeUpdate(query);
     }
 
     private List<Todo> selectTodoList() {

@@ -8,17 +8,22 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.stream.IntStream;
 
 public class JDBCConnectionPool {
-    private final ConcurrentLinkedQueue<Connection> connections;
+    private static ConcurrentLinkedQueue<Connection> connections;
+    private static JDBCConnectionPool jdbcConnectionPool;
 
-    public JDBCConnectionPool(String url, String username, String password, int poolSize) throws SQLException {
-        connections = new ConcurrentLinkedQueue<>();
-        IntStream.range(0, poolSize).forEach(i -> {
-            try {
-                connections.add(DriverManager.getConnection(url, username, password));
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
-        });
+    public static JDBCConnectionPool of(String url, String username, String password, int poolSize) throws SQLException {
+        if(jdbcConnectionPool == null) {
+            connections = new ConcurrentLinkedQueue<>();
+            IntStream.range(0, poolSize).forEach(i -> {
+                try {
+                    connections.add(DriverManager.getConnection(url, username, password));
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+            jdbcConnectionPool = new JDBCConnectionPool();
+        }
+        return jdbcConnectionPool;
     }
 
     public synchronized Optional<Connection> getConnection() {

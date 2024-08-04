@@ -10,8 +10,16 @@ import java.util.stream.Collectors;
 
 public class MapTodoRepository implements TodoRepository {
     static private final Map<Integer, Todo> map = new HashMap<>();
+    static private MapTodoRepository mapTodoRepository;
 
     private static int todoId = 0;
+
+    public static MapTodoRepository getInstance() {
+        if (mapTodoRepository == null) {
+            mapTodoRepository = new MapTodoRepository();
+        }
+        return mapTodoRepository;
+    }
 
     private static int getTodoId() {
         return ++todoId;

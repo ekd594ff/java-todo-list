@@ -29,25 +29,25 @@ public interface TodoRepository {
 
     static TodoRepository createRepository() throws SQLException {
         Properties properties = new Properties();
-        try (InputStream input = new FileInputStream("src/main/java/org/homework/step4/application.properties.example")) {
+        try (InputStream input = new FileInputStream("src/main/java/org/homework/step4/application.properties")) {
             properties.load(input);
             String appMode = (String) properties.get("app.mode");
             switch (appMode) {
                 case "development":
-                    return new MapTodoRepository();
+                    return MapTodoRepository.getInstance();
                 case "production":
                     String url = properties.getProperty("db.url");
                     String username = properties.getProperty("db.username");
                     String password = properties.getProperty("db.password");
                     int poolSize = Integer.parseInt(properties.getProperty("db.poolsize"));
                     JDBCConnectionPool jdbcConnectionPool;
-                    jdbcConnectionPool = new JDBCConnectionPool(url, username, password, poolSize);
-                    return new MySQLTodoRepository(jdbcConnectionPool);
+                    jdbcConnectionPool = JDBCConnectionPool.of(url, username, password, poolSize);
+                    return MySQLTodoRepository.from(jdbcConnectionPool);
                 default:
-                    return new MapTodoRepository();
+                    return MapTodoRepository.getInstance();
             }
         } catch (IOException | SQLException ex) {
-            return new MapTodoRepository();
+            return MapTodoRepository.getInstance();
         }
     }
 }

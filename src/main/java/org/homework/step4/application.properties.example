@@ -1,6 +1,0 @@
-app.mode= # development, production
-db.url= # url of database server
-db.username= # database username
-db.password= # database password
-db.name= # database(mysql)
-db.poolsize= # the number of pool connection
